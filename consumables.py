@@ -1,3 +1,5 @@
+from settings import open_settings
+
 def open_consumable_sub():
     from tkinter import Toplevel, Label, Checkbutton, Button
     consum_window = Toplevel()

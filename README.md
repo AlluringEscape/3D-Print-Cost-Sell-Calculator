@@ -14,4 +14,4 @@ This Python program calculates the cost of a 3D printing job, including material
 ## Usage
 Run the program:
 ```bash
-python main_gui.py
+python main.py
