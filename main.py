@@ -1,12 +1,13 @@
-from calculator import calculate_cost
-from inputs import gather_inputs
+from tkinter import *
+from tkinter import ttk
+from preparation import open_preparation_sub
+from post_processing import open_post_processing_sub
+from consumables import open_consumables_sub
+from settings import open_settings, open_printer_settings, open_material_settings
 
-def main():
-    print("Welcome to the 3D Printing Cost Calculator!")
-    inputs = gather_inputs()
 
-    total_cost = calculate_cost(*inputs)
-    print(f"\nThe total cost of the 3D print job is: ${total_cost:.2f}")
+#Initalize the main app window
+root = Tk()
+root.title("3D Printing Business Calculator")
+root.geometry("1600x1400")
 
-if __name__ == "__main__":
-    main()
