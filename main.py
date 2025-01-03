@@ -3,7 +3,8 @@ from tkinter import ttk
 from preparation import open_preparation_sub
 from post_processing import open_post_processing_sub
 from consumables import open_consumable_sub
-from settings import open_settings, open_printer_settings, open_material_settings
+from printer_settings import open_printer_settings
+from settings import open_settings, open_material_settings
 
 # Initialize the main app window
 root = Tk()
