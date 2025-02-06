@@ -3,8 +3,8 @@ from utils import center_window
 
 def open_post_processing_sub(parent, time_var):
     post_window = Toplevel(parent)
-    center_window(post_window, parent)
     post_window.title("Post-Processing Settings")
+    center_window(post_window, parent)
 
     entries = {}
     tasks = [
