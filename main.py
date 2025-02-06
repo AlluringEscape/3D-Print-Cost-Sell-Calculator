@@ -4,52 +4,59 @@ from preparation import open_preparation_sub
 from post_processing import open_post_processing_sub
 from consumables import open_consumable_sub
 from printer_settings import open_printer_settings
-from settings import open_settings, open_material_settings
+from settings import open_settings
+from utils import load_settings
 
-# Initialize the main app window
 root = Tk()
 root.title("3D Print Cost/Sell Calculator")
-root.geometry("1600x1400")
+root.geometry("600x400")
 
-# Main Page widgets
+# Variables
+weight_var = DoubleVar()
+print_time_var = DoubleVar()
 
 # Printer
 Label(root, text="Printer:").grid(row=0, column=0, sticky=W)
 printer_dropdown = ttk.Combobox(root, values=["Printer 1", "Printer 2"])
 printer_dropdown.grid(row=0, column=1)
-Button(root, text="Printer Settings", command=open_printer_settings).grid(row=0, column=2)
+Button(root, text="Printer Settings", command=lambda: open_printer_settings(root)).grid(row=0, column=2)
 
 # Materials
 Label(root, text="Materials:").grid(row=1, column=0, sticky=W)
 material_dropdown = ttk.Combobox(root, values=["Material 1", "Material 2"])
 material_dropdown.grid(row=1, column=1)
-Button(root, text="Material Settings", command=open_material_settings).grid(row=1, column=2)
+Button(root, text="Material Settings", command=lambda: open_material_settings(root)).grid(row=1, column=2)
 
 # Weight
 Label(root, text="Weight (Grams):").grid(row=2, column=0, sticky=W)
-Entry(root).grid(row=2, column=1)
+Entry(root, textvariable=weight_var).grid(row=2, column=1)
 
 # Print Time
-Label(root, text="Print Time:").grid(row=3, column=0, sticky=W)
-Entry(root).grid(row=3, column=1)
+Label(root, text="Print Time (Hours):").grid(row=3, column=0, sticky=W)
+Entry(root, textvariable=print_time_var).grid(row=3, column=1)
 
-# Preparation
-Button(root, text="Preparation", command=open_preparation_sub).grid(row=4, column=0, sticky=W)
+# Buttons
+Button(root, text="Preparation", command=lambda: open_preparation_sub(root)).grid(row=4, column=0, sticky=W)
+Button(root, text="Post-Processing", command=lambda: open_post_processing_sub(root)).grid(row=5, column=0, sticky=W)
+Button(root, text="Consumables", command=lambda: open_consumable_sub(root)).grid(row=6, column=0, sticky=W)
+Button(root, text="Settings", command=lambda: open_settings(root)).grid(row=9, column=0, sticky=W)
 
-# Post-Processing
-Button(root, text="Post-Processing", command=open_post_processing_sub).grid(row=5, column=0, sticky=W)
+def show_quote():
+    settings = load_settings()
+    total = calculate_cost(
+        material_cost=10,  # Placeholder
+        material_used=weight_var.get(),
+        energy_cost=settings["energy_cost"],
+        preparation_time=1,  # Placeholder
+        labor_cost=settings["labor_cost"],
+        fail_rate=settings["fail_rate"]/100,
+        post_processing_time=0.5,  # Placeholder
+        consumables=5,  # Placeholder
+        markup=settings["markup"]
+    )
+    quote_window = Toplevel(root)
+    Label(quote_window, text=f"Total Cost: ${total:.2f}").pack()
 
-# Consumables
-Button(root, text="Consumables", command=open_consumable_sub).grid(row=6, column=0, sticky=W)
+Button(root, text="Print Quote", command=show_quote).grid(row=8, column=0, sticky=W)
 
-# Cost Breakdown
-Button(root, text="Cost Breakdown", command=lambda: print("Menu")).grid(row=7, column=0, sticky=W)
-
-# Print Quote
-Button(root, text="Print Quote", command=lambda: print("Quote")).grid(row=8, column=0, sticky=W)
-
-# Settings
-Button(root, text="Settings", command=open_settings).grid(row=9, column=0, sticky=W)
-
-# Run App
-root.mainloop()  # Ensures the app starts and stays open
+root.mainloop()
