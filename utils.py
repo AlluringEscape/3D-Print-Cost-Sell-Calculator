@@ -5,6 +5,7 @@ import tkinter as tk
 DATA_DIR = "data"
 PRINTERS_FILE = os.path.join(DATA_DIR, "printers.json")
 MATERIALS_FILE = os.path.join(DATA_DIR, "materials.json")
+CONSUMABLES_FILE = os.path.join(DATA_DIR, "consumables.json")
 SETTINGS_FILE = os.path.join(DATA_DIR, "settings.json")
 
 DEFAULT_SETTINGS = {
@@ -15,9 +16,6 @@ DEFAULT_SETTINGS = {
 }
 
 def center_window(window, parent):
-    """
-    Center a window relative to its parent
-    """
     window.update_idletasks()
     width = window.winfo_width()
     height = window.winfo_height()
