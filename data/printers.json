@@ -1,0 +1,8 @@
+[
+  {
+    "name": "ff",
+    "model": "Creality Ender 3",
+    "type": "FDM",
+    "bed_size": "220x220x250mm"
+  }
+]

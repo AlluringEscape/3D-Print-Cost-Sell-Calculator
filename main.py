@@ -6,6 +6,7 @@ from consumables import open_consumable_sub
 from printer_settings import open_printer_settings
 from settings import open_settings
 from utils import load_settings
+from utils import load_data, PRINTERS_FILE
 
 root = Tk()
 root.title("3D Print Cost/Sell Calculator")
@@ -15,11 +16,18 @@ root.geometry("600x400")
 weight_var = DoubleVar()
 print_time_var = DoubleVar()
 
-# Printer
+# Update the printer dropdown section
+def refresh_printer_dropdown():
+    printers = load_data(PRINTERS_FILE)
+    printer_dropdown["values"] = [f"{p['name']} ({p['model']})" for p in printers]
+    if printers:
+        printer_dropdown.current(0)
+
+# Printer 
 Label(root, text="Printer:").grid(row=0, column=0, sticky=W)
-printer_dropdown = ttk.Combobox(root, values=["Printer 1", "Printer 2"])
+printer_dropdown = ttk.Combobox(root)
 printer_dropdown.grid(row=0, column=1)
-Button(root, text="Printer Settings", command=lambda: open_printer_settings(root)).grid(row=0, column=2)
+Button(root, text="Printer Settings", command=lambda: open_printer_settings(root, refresh_printer_dropdown)).grid(row=0, column=2)
 
 # Materials
 Label(root, text="Materials:").grid(row=1, column=0, sticky=W)
@@ -58,5 +66,7 @@ def show_quote():
     Label(quote_window, text=f"Total Cost: ${total:.2f}").pack()
 
 Button(root, text="Print Quote", command=show_quote).grid(row=8, column=0, sticky=W)
+
+refresh_printer_dropdown()
 
 root.mainloop()

@@ -27,8 +27,14 @@ def load_data(file):
         os.makedirs(DATA_DIR, exist_ok=True)
     try:
         with open(file, "r") as f:
-            return json.load(f)
+            data = json.load(f)
+            if file == PRINTERS_FILE and not data:
+                # Add default printer if empty
+                return [{"name": "Default Printer", "model": "Custom", "type": "FDM", "bed_size": "200x200x200mm"}]
+            return data
     except (FileNotFoundError, json.JSONDecodeError):
+        if file == PRINTERS_FILE:
+            return [{"name": "Default Printer", "model": "Custom", "type": "FDM", "bed_size": "200x200x200mm"}]
         return []
 
 def save_data(data, file):

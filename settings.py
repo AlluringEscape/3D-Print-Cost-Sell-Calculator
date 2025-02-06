@@ -3,9 +3,18 @@ from utils import load_settings, save_data, SETTINGS_FILE
 from printer_settings import open_printer_settings
 from material_settings import open_material_settings
 
+def center_window(window, parent):
+    window.update_idletasks()
+    width = window.winfo_width()
+    height = window.winfo_height()
+    x = parent.winfo_x() + (parent.winfo_width() // 2) - (width // 2)
+    y = parent.winfo_y() + (parent.winfo_height() // 2) - (height // 2)
+    window.geometry(f'+{x}+{y}')
+
 def open_settings(parent):
     settings_window = Toplevel(parent)
     settings_window.title("Settings")
+    center_window(settings_window, parent)
     
     current = load_settings()
     
