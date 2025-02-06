@@ -1,13 +1,16 @@
 from tkinter import Toplevel, Label, Button, Listbox, Entry, END, messagebox
-from utils import load_data, save_data, MATERIALS_FILE
+from utils import center_window, load_data, save_data, MATERIALS_FILE
 
 def open_material_settings(parent):
-    materials = load_data(MATERIALS_FILE)
+    material_window = Toplevel(parent)
+    material_window.title("Material Settings")
+    center_window(material_window, parent)
     
     def refresh_listbox():
         listbox.delete(0, END)
         for material in materials:
             listbox.insert(END, f"{material['name']} - ${material['cost_per_gram']}/g")
+
     
     def open_add_material_popup():
         add_window = Toplevel(parent)

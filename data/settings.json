@@ -1,0 +1,6 @@
+{
+  "energy_cost": 0.15,
+  "labor_cost": 20.0,
+  "fail_rate": 10.0,
+  "markup": 50.0
+}
