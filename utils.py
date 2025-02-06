@@ -1,5 +1,6 @@
 import json
 import os
+import tkinter as tk
 
 DATA_DIR = "data"
 PRINTERS_FILE = os.path.join(DATA_DIR, "printers.json")
@@ -12,6 +13,17 @@ DEFAULT_SETTINGS = {
     "fail_rate": 10,
     "markup": 30
 }
+
+def center_window(window, parent):
+    """
+    Center a window relative to its parent
+    """
+    window.update_idletasks()
+    width = window.winfo_width()
+    height = window.winfo_height()
+    x = parent.winfo_x() + (parent.winfo_width() // 2) - (width // 2)
+    y = parent.winfo_y() + (parent.winfo_height() // 2) - (height // 2)
+    window.geometry(f'+{x}+{y}')
 
 def load_settings():
     if not os.path.exists(DATA_DIR):
@@ -27,11 +39,7 @@ def load_data(file):
         os.makedirs(DATA_DIR, exist_ok=True)
     try:
         with open(file, "r") as f:
-            data = json.load(f)
-            if file == PRINTERS_FILE and not data:
-                # Add default printer if empty
-                return [{"name": "Default Printer", "model": "Custom", "type": "FDM", "bed_size": "200x200x200mm"}]
-            return data
+            return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         if file == PRINTERS_FILE:
             return [{"name": "Default Printer", "model": "Custom", "type": "FDM", "bed_size": "200x200x200mm"}]
