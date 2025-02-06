@@ -1,5 +1,5 @@
 from tkinter import Toplevel, Label, Button, Listbox, Entry, END, messagebox, ttk
-from utils import load_data, save_data, MATERIALS_FILE, center_window
+from utils import *
 
 def open_material_settings(parent):
     materials = load_data(MATERIALS_FILE)
@@ -7,47 +7,39 @@ def open_material_settings(parent):
     def refresh_listbox():
         listbox.delete(0, END)
         for mat in materials:
-            listbox.insert(END, f"{mat['brand']} | {mat['type']} | ${mat['cost_per_gram']}/g")
+            listbox.insert(END, f"{mat['brand']} ({mat['type']}) - ${mat['cost_per_gram']}/g")
 
-    def open_add_material_popup():
+    def open_add_popup():
         add_window = Toplevel(parent)
         center_window(add_window, parent)
         add_window.title("Add Material")
         
-        fields = [
-            ("Brand:", "text"),
-            ("Type (FDM/Resin):", "text"),
-            ("Cost per Gram ($):", "number"),
-            ("Cost per Unit ($):", "number")
-        ]
+        Label(add_window, text="Brand:").grid(row=0, column=0, padx=5, pady=5)
+        brand_entry = Entry(add_window)
+        brand_entry.grid(row=0, column=1, padx=5, pady=5)
         
-        entries = {}
-        for i, (label, dtype) in enumerate(fields):
-            Label(add_window, text=label).grid(row=i, column=0, padx=5, pady=5)
-            entries[label] = Entry(add_window)
-            entries[label].grid(row=i, column=1, padx=5, pady=5)
+        Label(add_window, text="Type:").grid(row=1, column=0, padx=5, pady=5)
+        type_combo = ttk.Combobox(add_window, values=["FDM", "Resin"], state="readonly")
+        type_combo.grid(row=1, column=1, padx=5, pady=5)
         
-        def validate_and_add():
+        Label(add_window, text="Cost/Gram ($):").grid(row=2, column=0, padx=5, pady=5)
+        cost_entry = Entry(add_window)
+        cost_entry.grid(row=2, column=1, padx=5, pady=5)
+
+        def save_material():
             try:
-                new_mat = {
-                    "brand": entries["Brand:"].get(),
-                    "type": entries["Type (FDM/Resin):"].get().capitalize(),
-                    "cost_per_gram": float(entries["Cost per Gram ($):"].get()),
-                    "cost_per_unit": float(entries["Cost per Unit ($):"].get())
-                }
-                
-                if new_mat["type"] not in ["Fdm", "Resin"]:
-                    raise ValueError("Type must be FDM or Resin")
-                
-                materials.append(new_mat)
+                materials.append({
+                    "brand": brand_entry.get().strip(),
+                    "type": type_combo.get(),
+                    "cost_per_gram": float(cost_entry.get())
+                })
                 save_data(materials, MATERIALS_FILE)
                 refresh_listbox()
                 add_window.destroy()
-                
-            except ValueError as e:
-                messagebox.showerror("Input Error", f"Invalid format: {str(e)}")
+            except:
+                messagebox.showerror("Error", "Invalid values")
 
-        Button(add_window, text="Add", command=validate_and_add).grid(row=len(fields), columnspan=2)
+        Button(add_window, text="Save", command=save_material).grid(row=3, columnspan=2)
 
     def remove_material():
         selected = listbox.curselection()
@@ -64,5 +56,5 @@ def open_material_settings(parent):
     listbox.pack(pady=10)
     refresh_listbox()
     
-    Button(mat_window, text="Add Material", command=open_add_material_popup).pack(side="left", padx=10)
-    Button(mat_window, text="Remove Selected", command=remove_material).pack(side="right", padx=10)
+    Button(mat_window, text="Add", command=open_add_popup).pack(side="left", padx=10)
+    Button(mat_window, text="Remove", command=remove_material).pack(side="right", padx=10)

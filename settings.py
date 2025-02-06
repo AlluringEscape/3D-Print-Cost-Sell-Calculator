@@ -1,35 +1,46 @@
-from tkinter import Toplevel, Label, Button, Entry
-from utils import load_settings, save_data, SETTINGS_FILE
-from printer_settings import open_printer_settings
-from material_settings import open_material_settings
-
-def center_window(window, parent):
-    window.update_idletasks()
-    width = window.winfo_width()
-    height = window.winfo_height()
-    x = parent.winfo_x() + (parent.winfo_width() // 2) - (width // 2)
-    y = parent.winfo_y() + (parent.winfo_height() // 2) - (height // 2)
-    window.geometry(f'+{x}+{y}')
+from tkinter import Toplevel, Label, Button, Entry, ttk
+from utils import *
 
 def open_settings(parent):
     settings_window = Toplevel(parent)
-    settings_window.title("Settings")
     center_window(settings_window, parent)
+    settings_window.title("Application Settings")
     
     current = load_settings()
-    
     entries = {}
-    for i, (key, val) in enumerate(current.items()):
-        Label(settings_window, text=f"{key.replace('_', ' ').title()}:").grid(row=i, column=0)
+    
+    # Main Settings
+    fields = [
+        ("Hourly Energy Cost ($):", "energy_cost"),
+        ("Hourly Labor Cost ($):", "labor_cost"),
+        ("Failure Rate (%):", "fail_rate"),
+        ("Markup (%):", "markup")
+    ]
+    
+    for i, (label, key) in enumerate(fields):
+        Label(settings_window, text=label).grid(row=i, column=0, padx=10, pady=5, sticky="e")
         entries[key] = Entry(settings_window)
-        entries[key].insert(0, str(val))
-        entries[key].grid(row=i, column=1)
+        entries[key].insert(0, str(current[key]))
+        entries[key].grid(row=i, column=1, padx=10, pady=5)
     
-    def save():
-        new_settings = {k: float(v.get()) for k, v in entries.items()}
-        save_data(new_settings, SETTINGS_FILE)
-        settings_window.destroy()
-    
-    Button(settings_window, text="Save", command=save).grid(row=len(current)+1, columnspan=2)
-    Button(settings_window, text="Printer Settings", command=lambda: open_printer_settings(parent)).pack()
-    Button(settings_window, text="Material Settings", command=lambda: open_material_settings(parent)).pack()
+    # Other Settings Buttons
+    Button(settings_window, text="Printer Settings",
+          command=lambda: open_printer_settings(parent, lambda: None)).grid(row=4, columnspan=2)
+    Button(settings_window, text="Material Settings",
+          command=lambda: open_material_settings(parent)).grid(row=5, columnspan=2)
+    Button(settings_window, text="Consumable Settings",
+          command=lambda: open_consumable_settings(parent)).grid(row=6, columnspan=2)
+
+    def save_settings():
+        new_settings = {}
+        try:
+            new_settings["energy_cost"] = float(entries["energy_cost"].get())
+            new_settings["labor_cost"] = float(entries["labor_cost"].get())
+            new_settings["fail_rate"] = float(entries["fail_rate"].get())
+            new_settings["markup"] = float(entries["markup"].get())
+            save_data(new_settings, SETTINGS_FILE)
+            settings_window.destroy()
+        except:
+            messagebox.showerror("Error", "Invalid numeric values")
+
+    Button(settings_window, text="Save", command=save_settings).grid(row=7, columnspan=2)
