@@ -2,5 +2,13 @@
   {
     "name": "Glue",
     "cost": 0.01
+  },
+  {
+    "name": "me",
+    "cost": 23.0
+  },
+  {
+    "name": "Glitter",
+    "cost": 0.1
   }
 ]
