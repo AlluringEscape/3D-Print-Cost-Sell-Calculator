@@ -1,8 +1,7 @@
 [
   {
-    "brand": "Hatch",
-    "type": "Fdm",
-    "cost_per_gram": 0.02,
-    "cost_per_unit": 2.0
+    "brand": "hatch",
+    "type": "FDM",
+    "cost_per_gram": 0.03
   }
 ]
